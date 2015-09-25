@@ -1,5 +1,5 @@
 = Description
-  A Ruby library for generating an authentication signature for Azure services.
+  A Ruby library for generating an authentication signature for Azure storage services.
 
 = Installation
   gem install azure-signature
@@ -12,7 +12,10 @@
 
   sig = Azure::Signature.new(url, key)
 
-  # Use the defaults
+  # Look at canonical URL
+  p sig.canonical_url # => "/testsnapshots/Tables"
+
+  # Get a signature with the defaults
   p sig.signature(:table)
 
   # Or pass some options
@@ -33,6 +36,11 @@
 = License
   Apache 2.0
   http://www.apache.org/licenses/LICENSE-2.0
+
+= Warranty
+  This package is provided "as is" and without any express or
+  implied warranties, including, without limitation, the implied
+  warranties of merchantability and fitness for a particular purpose.
 
 = Author
   Daniel Berger
