@@ -1,0 +1,38 @@
+= Description
+  A Ruby library for generating an authentication signature for Azure services.
+
+= Installation
+  gem install azure-signature
+
+= Synopis
+  require 'azure/signature'
+
+  key = "SGVsbG8gV29ybGQ="
+  url = "http://testsnapshots.blob.core.windows.net/Tables"
+
+  sig = Azure::Signature.new(url, key)
+
+  # Use the defaults
+  p sig.signature(:table)
+
+  # Or pass some options
+  p sig.signature(:table, :auth_string => true, :date => some_date, :verb => 'PUT')
+
+= Caveats
+  For the first release only table signatures are supported (because that's
+  what I happened to need). I'll add blob, file and queue in the future.
+
+= Acknowledgements
+  I borrowed the code to canonicalize resources and headers from the
+  azure-sdk-for-ruby project.
+
+= Copyright
+   Copyright (c) 2015, Daniel J. Berger.
+   All rights reserved.
+
+= License
+  Apache 2.0
+  http://www.apache.org/licenses/LICENSE-2.0
+
+= Author
+  Daniel Berger
