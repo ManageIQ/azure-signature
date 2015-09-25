@@ -8,6 +8,9 @@ require 'time'
 module Azure
   # The Signature class encapsulates an canonicalized resource string.
   class Signature
+    # The version of the azure-signature library.
+    VERSION = '0.1.0'
+
     # The resource (URL) passed to the constructor.
     attr_reader :resource
 
@@ -112,7 +115,7 @@ module Azure
     def canonicalized_headers(headers)
       headers = headers.map { |k,v| [k.to_s.downcase, v] }
       headers.select! { |k,v| k =~ /^x-ms-/ }
-      headers.sort_by! { |(k,v)| k }
+      headers.sort_by! { |k,v| k }
       headers.map! { |k,v| '%s:%s' % [k, v] }
       headers.map! { |h| h.gsub(/\s+/, ' ') }.join("\n")
     end
