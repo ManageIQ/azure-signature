@@ -8,6 +8,10 @@ class TC_Azure_Signature < Test::Unit::TestCase
     @sig = Azure::Signature.new(@url, @key)
   end
 
+  test "version constant is set to expected value" do
+    assert_equal("0.1.0", Azure::Signature::VERSION)
+  end
+
   test "key method basic functionality" do
     assert_respond_to(@sig, :key)
     assert_kind_of(String, @sig.key)
