@@ -5,16 +5,17 @@ require 'rake/testtask'
 CLEAN.include("**/*.gem", "**/*.rbc")
 
 namespace :gem do
-  desc 'Build the azure-signature gem'
-  task :build => [:clean] do
+  desc 'Create the azure-signature gem'
+  task :create => [:clean] do
+    require 'rubygems/package'
     spec = eval(IO.read('azure-signature.gemspec'))
-    Gem::Builder.new(spec).build
+    Gem::Package.build(spec)
   end
 
   desc "Install the azure-signature library as a gem"
-  task :install => [:build] do
+  task :install => [:create] do
     file = Dir["*.gem"].first
-    sh "gem install -i #{file}"
+    sh "gem install -l #{file}"
   end
 end
 
