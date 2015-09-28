@@ -9,7 +9,7 @@ module Azure
   # The Signature class encapsulates an canonicalized resource string.
   class Signature
     # The version of the azure-signature library.
-    VERSION = '0.1.0'
+    VERSION = '0.2.0'
 
     # The resource (URL) passed to the constructor.
     attr_reader :resource
@@ -28,6 +28,8 @@ module Azure
 
     alias url resource
     alias canonical_url canonical_resource
+
+    attr_reader :canonical_headers
 
     # Creates and returns an Azure::Signature object taking a +resource+ (URL)
     # as an argument and a storage account key. The +resource+ will typically
@@ -60,8 +62,8 @@ module Azure
       verb = options[:verb] || 'GET'
       date = options[:date] || Time.now.httpdate
       auth_string = options[:auth_string] || false
-      content_md5 = options[:content_md5]
-      content_type = options[:content_type]
+      content_md5 = options[:content_md5] || options['Content-MD5']
+      content_type = options[:content_type] || options['Content-Type']
 
       unless ['SharedKey', 'SharedKeyLight'].include?(auth_type)
         raise ArgumentError, "auth type must be SharedKey or SharedKeyLight"
@@ -80,6 +82,22 @@ module Azure
       end
     end
 
+    def blob_signature(headers = {})
+      auth_string = headers.delete(:auth_string)
+      verb = headers.delete(:verb) || 'GET'
+
+      headers['x-ms-date'] ||= headers[:x_ms_date] || Time.now.httpdate
+      headers['x-ms-version'] ||= headers[:x_ms_version] || '2015-02-21'
+
+      body = generate_string(verb, headers)
+
+      if auth_string
+        "Authorization: SignedKey #{account_name}:" + sign(body)
+      else
+        sign(body)
+      end
+    end
+
     # Generic wrapper method for getting a signature, where +type+ can be
     # :table, :blob, :queue, or :file.
     #
@@ -91,10 +109,31 @@ module Azure
       case type.to_s.downcase
         when 'table'
           table_signature(args)
+        when 'blob'
+          blob_signature(args)
       end
     end
 
     private
+
+    def generate_string(verb, headers)
+      [
+        verb,
+        headers['content-encoding'],
+        headers['content-language'],
+        headers['content-length'],
+        headers['content-md5'],
+        headers['content-type'],
+        headers['date'],
+        headers['if-modified-since'],
+        headers['if-match'],
+        headers['if-none-match'],
+        headers['if-unmodified-since'],
+        headers['range'],
+        canonicalize_headers(headers),
+        canonical_resource,
+      ].join("\n")
+    end
 
     # Generate a canonical URL from an endpoint.
     #--
@@ -112,8 +151,8 @@ module Azure
     #--
     # Borrowed from azure-sdk-for-ruby.
     #
-    def canonicalized_headers(headers)
-      headers = headers.map { |k,v| [k.to_s.downcase, v] }
+    def canonicalize_headers(headers)
+      headers = headers.map { |k,v| [k.to_s.sub('_', '-').downcase, v] }
       headers.select! { |k,v| k =~ /^x-ms-/ }
       headers.sort_by! { |k,v| k }
       headers.map! { |k,v| '%s:%s' % [k, v] }
