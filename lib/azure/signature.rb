@@ -83,16 +83,25 @@ module Azure
     end
 
     def blob_signature(headers = {})
-      auth_string = headers.delete(:auth_string)
+      auth_string = headers.delete(:auth_string) || false
+      auth_type = headers.delete(:auth_type) || 'SharedKey'
       verb = headers.delete(:verb) || 'GET'
 
-      headers['x-ms-date'] ||= headers[:x_ms_date] || Time.now.httpdate
-      headers['x-ms-version'] ||= headers[:x_ms_version] || '2015-02-21'
+      unless ['SharedKey', 'SharedKeyLight'].include?(auth_type)
+        raise ArgumentError, "auth type must be SharedKey or SharedKeyLight"
+      end
 
-      body = generate_string(verb, headers)
+      headers['x-ms-date'] ||= headers.delete(:x_ms_date) || Time.now.httpdate
+      headers['x-ms-version'] ||= headers.delete(:x_ms_version) || '2015-02-21'
+
+      if auth_type == 'SharedKeyLight'
+        headers['Date'] ||= headers[:date] || Time.now.httpdate
+      end
+
+      body = generate_string(verb, headers, auth_type)
 
       if auth_string
-        "Authorization: SignedKey #{account_name}:" + sign(body)
+        "Authorization: SharedKey #{account_name}:" + sign(body)
       else
         sign(body)
       end
@@ -116,23 +125,36 @@ module Azure
 
     private
 
-    def generate_string(verb, headers)
-      [
-        verb,
-        headers['content-encoding'],
-        headers['content-language'],
-        headers['content-length'],
-        headers['content-md5'],
-        headers['content-type'],
-        headers['date'],
-        headers['if-modified-since'],
-        headers['if-match'],
-        headers['if-none-match'],
-        headers['if-unmodified-since'],
-        headers['range'],
-        canonicalize_headers(headers),
-        canonical_resource,
-      ].join("\n")
+    def generate_string(verb, headers, auth_type)
+      canonical_headers = canonicalize_headers(headers)
+
+      if auth_type == 'SharedKeyLight'
+       [
+          verb.to_s.upcase,
+          headers['Content-MD5'],
+          headers['Content-Type'],
+          headers['Date'],
+          canonical_headers,
+          canonical_resource
+        ].join("\n")
+      else
+        [
+          verb.to_s.upcase,
+          headers['Content-Encoding'],
+          headers['Content-Language'],
+          headers['Content-Length'],
+          headers['Content-MD5'],
+          headers['Content-Type'],
+          headers['Date'],
+          headers['If-Modified-Since'],
+          headers['If-Match'],
+          headers['If-None-Match'],
+          headers['If-Unmodified-Since'],
+          headers['Range'],
+          canonical_headers,
+          canonical_resource,
+        ].join("\n")
+      end
     end
 
     # Generate a canonical URL from an endpoint.
@@ -152,7 +174,7 @@ module Azure
     # Borrowed from azure-sdk-for-ruby.
     #
     def canonicalize_headers(headers)
-      headers = headers.map { |k,v| [k.to_s.sub('_', '-').downcase, v] }
+      headers = headers.map { |k,v| [k.to_s.gsub('_', '-').downcase, v] }
       headers.select! { |k,v| k =~ /^x-ms-/ }
       headers.sort_by! { |k,v| k }
       headers.map! { |k,v| '%s:%s' % [k, v] }
