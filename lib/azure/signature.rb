@@ -70,9 +70,9 @@ module Azure
       end
 
       if auth_type == 'SharedKey'
-        body = [verb, content_md5, content_type, date, canonical_resource].join("\n")
+        body = [verb, content_md5, content_type, date, canonical_resource].join("\n").encode('UTF-8')
       else
-        body = [date, canonical_resource].join("\n")
+        body = [date, canonical_resource].join("\n").encode('UTF-8')
       end
 
       if auth_string
@@ -95,10 +95,10 @@ module Azure
       headers['x-ms-version'] ||= headers.delete(:x_ms_version) || '2015-02-21'
 
       if auth_type == 'SharedKeyLight'
-        headers['Date'] ||= headers[:date] || Time.now.httpdate
+        headers['Date'] ||= headers['x-ms-date'] || headers[:date] || Time.now.httpdate
       end
 
-      body = generate_string(verb, headers, auth_type)
+      body = generate_string(verb, headers, auth_type).encode('UTF-8')
 
       if auth_string
         "Authorization: SharedKey #{account_name}:" + sign(body)
