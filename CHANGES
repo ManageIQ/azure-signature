@@ -1,2 +1,6 @@
+= 0.2.0 - 13-Oct-2015
+* Added support for other types of signatures (blobs, queues, files).
+* The :auth_string argument no longer returns the word "Authorization".
+
 = 0.1.0 - 25-Sep-2015
 * Initial release
