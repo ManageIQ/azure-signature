@@ -76,12 +76,72 @@ module Azure
       end
 
       if auth_string
-        "Authorization: #{auth_type} #{account_name}:" + sign(body)
+        "#{auth_type} #{account_name}:" + sign(body)
       else
         sign(body)
       end
     end
 
+    # Generate a signature for use with the blob service. Use the +headers+
+    # hash to pass optional information. The following additional keys are
+    # supported:
+    #
+    # - :auth_type. Either 'SharedKey' (the default) or 'SharedKeyLight'.
+    # - :verb. The http verb used for SharedKey auth. The default is 'GET'.
+    # - :x_ms_date. The x-ms-date used. The default is Time.now.httpdate.
+    # - :x_ms_version. The x-ms-version used. The default is '2015-02-21'.
+    # - :auth_string. If true, prepends the auth_type + account name to the
+    #    result and returns a string. The default is false.
+    #
+    # The other headers of potential significance are below. Note that you
+    # are not required to set any of them.
+    #
+    # - 'Content-Encoding'
+    # - 'Content-Language'
+    # - 'Content-Length'
+    # - 'Content-MD5'
+    # - 'Content-Type'
+    # - 'Date'
+    # - 'If-Modified-Since'
+    # - 'If-Match'
+    # - 'If-None-Match'
+    # - 'If-Unmodified-Since'
+    # - 'Range'
+    #
+    # The result is a digest string that you can use as an authorization header
+    # for future http requests to (presumably) Azure storage endpoints.
+    #
+    # Example:
+    #
+    #  require 'azure-signature'
+    #  require 'rest-client'
+    #
+    #  url = "https://yourstuff.blob.core.windows.net/system?restype=container&comp=list&include=snapshots"
+    #  key = "xyzabcwhatever"
+    #
+    #  sig  = Signature.new(url, key)
+    #  date = Time.now.httpdate
+    #  vers = '2015-02-21'
+    #
+    #  headers = {
+    #    'x-ms-date'    => date,
+    #    'x-ms-version' => vers,
+    #    'Accept'       => 'application/xml',
+    #    :auth_string   => true,
+    #  }
+    #
+    #  sig = sig.blob_signature(headers)
+    # headers['Authorization'] = sig
+    #
+    #  req = RestClient::Request.new(
+    #    :method => 'get',
+    #    :url => url,
+    #    :headers => headers
+    #  )
+    #
+    # response = req.execute
+    # p response.body
+    #
     def blob_signature(headers = {})
       auth_string = headers.delete(:auth_string) || false
       auth_type = headers.delete(:auth_type) || 'SharedKey'
@@ -101,25 +161,26 @@ module Azure
       body = generate_string(verb, headers, auth_type).encode('UTF-8')
 
       if auth_string
-        "Authorization: SharedKey #{account_name}:" + sign(body)
+        "SharedKey #{account_name}:" + sign(body)
       else
         sign(body)
       end
     end
 
+    alias file_signature blob_signature
+    alias queue_signature blob_signature
+
     # Generic wrapper method for getting a signature, where +type+ can be
     # :table, :blob, :queue, or :file.
-    #
-    # At the moment only :table is supported.
-    #--
-    # TODO: Add support for other types.
     #
     def signature(type, args = {})
       case type.to_s.downcase
         when 'table'
           table_signature(args)
-        when 'blob'
+        when 'blob', 'file', 'queue'
           blob_signature(args)
+        else
+          raise ArgumentError, "invalid signature type '#{type}'"
       end
     end
 
