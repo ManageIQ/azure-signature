@@ -21,10 +21,6 @@
   # Or pass some options
   p sig.signature(:table, :auth_string => true, :date => some_date, :verb => 'PUT')
 
-= Caveats
-  For the first release only table signatures are supported (because that's
-  what I happened to need). I'll add blob, file and queue in the future.
-
 = Acknowledgements
   I borrowed the code to canonicalize resources and headers from the
   azure-sdk-for-ruby project.
