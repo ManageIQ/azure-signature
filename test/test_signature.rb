@@ -9,7 +9,7 @@ class TC_Azure_Signature < Test::Unit::TestCase
   end
 
   test "version constant is set to expected value" do
-    assert_equal("0.1.0", Azure::Signature::VERSION)
+    assert_equal("0.2.0", Azure::Signature::VERSION)
   end
 
   test "key method basic functionality" do
@@ -80,6 +80,19 @@ class TC_Azure_Signature < Test::Unit::TestCase
   test "constructor requires two arguments" do
     assert_raise(ArgumentError){ Azure::Signature.new }
     assert_raise(ArgumentError){ Azure::Signature.new('http://foo/bar') }
+  end
+
+  test "table_signature basic functionality" do
+    assert_respond_to(@sig, :table_signature)
+  end
+
+  test "blob_signature basic functionality" do
+    assert_respond_to(@sig, :blob_signature)
+  end
+
+  test "file_signature and queue_signature are aliases for blob_signature" do
+    assert_alias_method(@sig, :blob_signature, :file_signature)
+    assert_alias_method(@sig, :blob_signature, :queue_signature)
   end
 
   def teardown
