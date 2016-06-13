@@ -1,3 +1,8 @@
+= 0.2.1 - 13-June-2016
+* The signature methods now accept standard header strings as key arguments
+  as well as symbols, e.g. 'auth-type' vs :auth_type.
+* Replaced URI with Addressable::URI since it's more robust.
+
 = 0.2.0 - 13-Oct-2015
 * Added support for other types of signatures (blobs, queues, files).
 * The :auth_string argument no longer returns the word "Authorization".
