@@ -58,7 +58,7 @@ module Azure
     # for future http requests to (presumably) Azure storage endpoints.
     #
     def table_signature(options = {})
-      options.each{ |k,v| options[k.to_s.downcase.tr('_', '-')] = v }
+      options.clone.each{ |k,v| options[k.to_s.downcase.tr('_', '-')] = v }
 
       auth_type    = options['auth-type'] || 'SharedKey'
       verb         = options['verb'] || 'GET'
@@ -145,7 +145,7 @@ module Azure
     # p response.body
     #
     def blob_signature(headers = {})
-      headers.each{ |k,v| headers[k.to_s.downcase.tr('_', '-')] = v }
+      headers.clone.each{ |k,v| headers[k.to_s.downcase.tr('_', '-')] = v }
 
       auth_string = headers.delete('auth-string') || false
       auth_type   = headers.delete('auth_type') || 'SharedKey'
@@ -191,7 +191,7 @@ module Azure
     private
 
     def generate_string(verb, headers, auth_type)
-      headers.keys.each{ |k| headers[k.to_s.downcase] = headers[k] }
+      headers.clone.keys.each{ |k| headers[k.to_s.downcase] = headers[k] }
       canonical_headers = canonicalize_headers(headers)
 
       if auth_type == 'SharedKeyLight'
