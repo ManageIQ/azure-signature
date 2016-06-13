@@ -95,6 +95,13 @@ class TC_Azure_Signature < Test::Unit::TestCase
     assert_alias_method(@sig, :blob_signature, :queue_signature)
   end
 
+  test "signature with strings or symbols is identical" do
+    date = '2016-01-01'
+    sig_symbol = @sig.signature(:table, :auth_string => true, :date => date, :verb => 'PUT')
+    sig_string = @sig.signature(:table, 'Auth-String' => true, 'Date' => date, 'Verb' => 'PUT')
+    assert_equal(sig_symbol, sig_string)
+  end
+
   def teardown
     @key = nil
     @url = nil
