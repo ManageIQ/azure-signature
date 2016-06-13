@@ -54,6 +54,9 @@ module Azure
     # - :auth_string. If true, prepends the auth_type + account name to the
     #    result and returns a string. The default is false.
     #
+    # You may also use the string forms as keys, e.g. "Auth-Type" instead of
+    # :auth_type, if you prefer.
+    #
     # The result is a digest string that you can use as an authorization header
     # for future http requests to (presumably) Azure storage endpoints.
     #
@@ -95,6 +98,9 @@ module Azure
     # - :auth_string. If true, prepends the auth_type + account name to the
     #    result and returns a string. The default is false.
     #
+    # You may also use the string forms as keys, e.g. "Auth-Type" instead of
+    # :auth_type, if you prefer.
+    #
     # The other headers of potential significance are below. Note that you
     # are not required to set any of them.
     #
@@ -133,7 +139,7 @@ module Azure
     #  }
     #
     #  sig = sig.blob_signature(headers)
-    # headers['Authorization'] = sig
+    #  headers['Authorization'] = sig
     #
     #  req = RestClient::Request.new(
     #    :method => 'get',
@@ -141,8 +147,8 @@ module Azure
     #    :headers => headers
     #  )
     #
-    # response = req.execute
-    # p response.body
+    #  response = req.execute
+    #  p response.body
     #
     def blob_signature(headers = {})
       headers.clone.each{ |k,v| headers[k.to_s.downcase.tr('_', '-')] = v }
