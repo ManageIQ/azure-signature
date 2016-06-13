@@ -1,4 +1,4 @@
-require 'uri'
+require 'addressable'
 require 'openssl'
 require 'base64'
 require 'cgi'
@@ -37,7 +37,7 @@ module Azure
     #
     def initialize(resource, key)
       @resource = resource
-      @uri = URI.parse(resource)
+      @uri = Addressable::URI.parse(resource)
       @account_name = @uri.host.split(".").first.split("-").first
       @key = Base64.strict_decode64(key)
       @canonical_resource = canonicalize_resource(@uri)
