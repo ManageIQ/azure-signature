@@ -34,7 +34,7 @@ class TC_Azure_Signature < Test::Unit::TestCase
 
   test "uri method basic functionality" do
     assert_respond_to(@sig, :uri)
-    assert_kind_of(URI, @sig.uri)
+    assert_kind_of(Addressable::URI, @sig.uri)
   end
 
   test "canonical_resource method basic functionality" do
