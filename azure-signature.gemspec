@@ -2,7 +2,7 @@ require 'rubygems'
 
 Gem::Specification.new do |gem|
   gem.name      = 'azure-signature'
-  gem.version   = '0.2.0'
+  gem.version   = '0.2.1'
   gem.author    = 'Daniel J. Berger'
   gem.license   = 'Apache 2.0'
   gem.email     = 'djberg96@gmail.com'
