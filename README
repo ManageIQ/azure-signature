@@ -25,10 +25,6 @@
   I borrowed the code to canonicalize resources and headers from the
   azure-sdk-for-ruby project.
 
-= Copyright
-   Copyright (c) 2015, Daniel J. Berger.
-   All rights reserved.
-
 = License
   Apache 2.0
   http://www.apache.org/licenses/LICENSE-2.0

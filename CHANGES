@@ -1,4 +1,7 @@
-= 0.2.1 - 13-June-2016
+= 0.2.2 - 17-Jun-2016
+* The resource argument to the constructor is now automatically escaped.
+
+= 0.2.1 - 13-Jun-2016
 * The signature methods now accept standard header strings as key arguments
   as well as symbols, e.g. 'auth-type' vs :auth_type.
 * Replaced URI with Addressable::URI since it's more robust.
