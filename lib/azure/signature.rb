@@ -9,7 +9,7 @@ module Azure
   # The Signature class encapsulates an canonicalized resource string.
   class Signature
     # The version of the azure-signature library.
-    VERSION = '0.2.1'
+    VERSION = '0.2.2'
 
     # The resource (URL) passed to the constructor.
     attr_reader :resource
@@ -35,9 +35,11 @@ module Azure
     # as an argument and a storage account key. The +resource+ will typically
     # be an Azure storage account endpoint.
     #
+    # Note that the +resource+ is automatically escaped.
+    #
     def initialize(resource, key)
-      @resource = resource
-      @uri = Addressable::URI.parse(resource)
+      @resource = Addressable::URI.escape(resource)
+      @uri = Addressable::URI.parse(@resource)
       @account_name = @uri.host.split(".").first.split("-").first
       @key = Base64.strict_decode64(key)
       @canonical_resource = canonicalize_resource(@uri)
