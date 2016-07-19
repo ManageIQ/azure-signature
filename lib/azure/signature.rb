@@ -1,7 +1,6 @@
 require 'addressable'
 require 'openssl'
 require 'base64'
-require 'cgi'
 require 'time'
 
 # The Azure module serves as a namespace.
@@ -9,7 +8,7 @@ module Azure
   # The Signature class encapsulates an canonicalized resource string.
   class Signature
     # The version of the azure-signature library.
-    VERSION = '0.2.2'
+    VERSION = '0.2.3'
 
     # The resource (URL) passed to the constructor.
     attr_reader :resource
@@ -237,10 +236,13 @@ module Azure
     #
     def canonicalize_resource(uri)
       resource = '/' + account_name + (uri.path.empty? ? '/' : uri.path)
-      params = CGI.parse(uri.query.to_s).map { |k,v| [k.downcase, v] }
-      params.sort_by! { |k,v| k }
-      params.map! { |k,v| '%s:%s' % [k, v.map(&:strip).sort.join(',')] }
-      [resource, *params].join("\n")
+
+      nested = (uri.query_values(Array) || []).sort
+      memo   = Hash.new { |h, k| h[k] = [] }
+      hash   = nested.inject(memo){ |h, a| h[a.first] << a.last; h }
+      string = hash.inject('') { |s, a| s << "\n#{a.first}:#{a.last.join(',')}"; s }
+
+      resource + string
     end
 
     # Generate canonical headers.

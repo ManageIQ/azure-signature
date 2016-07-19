@@ -9,7 +9,7 @@ class TC_Azure_Signature < Test::Unit::TestCase
   end
 
   test "version constant is set to expected value" do
-    assert_equal("0.2.2", Azure::Signature::VERSION)
+    assert_equal("0.2.3", Azure::Signature::VERSION)
   end
 
   test "key method basic functionality" do
@@ -80,7 +80,6 @@ class TC_Azure_Signature < Test::Unit::TestCase
   test "constructor automatically escapes resource argument" do
     @url = "https://myaccount-secondary.blob.core.windows.net/mycontainer/myblob-{12345}"
     @sig = Azure::Signature.new(@url, @key)
-    expected = "/myaccount/mycontainer/myblob-%7B12345%7D"
     assert_equal("/myaccount/mycontainer/myblob-%7B12345%7D", @sig.canonical_resource)
     assert_equal("https://myaccount-secondary.blob.core.windows.net/mycontainer/myblob-%7B12345%7D", @sig.resource)
   end
