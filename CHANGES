@@ -1,3 +1,6 @@
+= 0.2.3 - 19-Jul-2016
+* Removed the cgi dependency.
+
 = 0.2.2 - 17-Jun-2016
 * The resource argument to the constructor is now automatically escaped.
 
