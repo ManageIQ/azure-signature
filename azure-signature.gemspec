@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.extra_rdoc_files = ['README', 'CHANGES', 'MANIFEST']
    
   gem.add_dependency('addressable')
-  gem.add_dependency('activesupport')
+  gem.add_dependency('activesupport', '>= 4.2.2')
   gem.add_development_dependency('test-unit')
 
   gem.description = <<-EOF
