@@ -9,7 +9,7 @@ module Azure
   # The Signature class encapsulates an canonicalized resource string.
   class Signature
     # The version of the azure-signature library.
-    VERSION = '0.3.0'
+    VERSION = '0.3.0'.freeze
 
     # The resource (URL) passed to the constructor.
     attr_reader :resource
