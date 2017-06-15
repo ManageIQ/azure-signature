@@ -26,6 +26,8 @@ module Azure
     # A URI object that encapsulates the resource.
     attr_reader :uri
 
+    attr_accessor :storage_services_version
+
     alias url resource
     alias canonical_url canonical_resource
 
@@ -43,6 +45,7 @@ module Azure
       @account_name = @uri.host.split(".").first.split("-").first
       @key = Base64.strict_decode64(key)
       @canonical_resource = canonicalize_resource(@uri)
+      @storage_services_version = '2016-05-31'
     end
 
     # Generate a signature for use with the table service. Use the +options+
@@ -96,7 +99,7 @@ module Azure
     # - :auth_type. Either 'SharedKey' (the default) or 'SharedKeyLight'.
     # - :verb. The http verb used for SharedKey auth. The default is 'GET'.
     # - :x_ms_date. The x-ms-date used. The default is Time.now.httpdate.
-    # - :x_ms_version. The x-ms-version used. The default is '2015-02-21'.
+    # - :x_ms_version. The x-ms-version used. The default is '2016-05-31'.
     # - :auth_string. If true, prepends the auth_type + account name to the
     #    result and returns a string. The default is false.
     #
@@ -131,7 +134,7 @@ module Azure
     #
     #  sig  = Signature.new(url, key)
     #  date = Time.now.httpdate
-    #  vers = '2015-02-21'
+    #  vers = '2016-05-31'
     #
     #  headers = {
     #    'x-ms-date'    => date,
@@ -165,7 +168,7 @@ module Azure
       end
 
       headers['x-ms-date'] ||= headers['date'] || Time.now.httpdate
-      headers['x-ms-version'] ||= '2015-02-21'
+      headers['x-ms-version'] ||= headers['version'] || storage_services_version
 
       if auth_type == 'SharedKeyLight'
         headers['date'] ||= headers['x-ms-date'] || Time.now.httpdate
