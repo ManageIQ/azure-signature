@@ -9,7 +9,7 @@ class TC_Azure_Signature < Test::Unit::TestCase
   end
 
   test "version constant is set to expected value" do
-    assert_equal("0.2.3", Azure::Signature::VERSION)
+    assert_equal("0.3.0", Azure::Signature::VERSION)
   end
 
   test "key method basic functionality" do
