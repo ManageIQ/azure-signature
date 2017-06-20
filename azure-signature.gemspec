@@ -2,7 +2,7 @@ require 'rubygems'
 
 Gem::Specification.new do |gem|
   gem.name      = 'azure-signature'
-  gem.version   = '0.2.3'
+  gem.version   = '0.3.0'
   gem.author    = 'Daniel J. Berger'
   gem.license   = 'Apache 2.0'
   gem.email     = 'djberg96@gmail.com'
@@ -14,6 +14,7 @@ Gem::Specification.new do |gem|
   gem.extra_rdoc_files = ['README', 'CHANGES', 'MANIFEST']
    
   gem.add_dependency('addressable')
+  gem.add_dependency('activesupport', '>= 4.2.2')
   gem.add_development_dependency('test-unit')
 
   gem.description = <<-EOF

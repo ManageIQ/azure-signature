@@ -2,13 +2,14 @@ require 'addressable'
 require 'openssl'
 require 'base64'
 require 'time'
+require 'active_support/core_ext/hash/conversions'
 
 # The Azure module serves as a namespace.
 module Azure
   # The Signature class encapsulates an canonicalized resource string.
   class Signature
     # The version of the azure-signature library.
-    VERSION = '0.2.3'
+    VERSION = '0.3.0'.freeze
 
     # The resource (URL) passed to the constructor.
     attr_reader :resource
@@ -24,6 +25,8 @@ module Azure
 
     # A URI object that encapsulates the resource.
     attr_reader :uri
+
+    attr_accessor :storage_services_version
 
     alias url resource
     alias canonical_url canonical_resource
@@ -42,6 +45,7 @@ module Azure
       @account_name = @uri.host.split(".").first.split("-").first
       @key = Base64.strict_decode64(key)
       @canonical_resource = canonicalize_resource(@uri)
+      @storage_services_version = '2016-05-31'
     end
 
     # Generate a signature for use with the table service. Use the +options+
@@ -62,11 +66,11 @@ module Azure
     # for future http requests to (presumably) Azure storage endpoints.
     #
     def table_signature(options = {})
-      options.clone.each{ |k,v| options[k.to_s.downcase.tr('_', '-')] = v }
+      options = options.transform_keys { |key| key.to_s.downcase.tr('_', '-') }
 
       auth_type    = options['auth-type'] || 'SharedKey'
       verb         = options['verb'] || 'GET'
-      date         = options['date'] || Time.now.httpdate
+      date         = options['date'] || options['x-ms-date'] || Time.now.httpdate
       auth_string  = options['auth-string'] || false
       content_md5  = options['content-md5']
       content_type = options['content-type']
@@ -95,7 +99,7 @@ module Azure
     # - :auth_type. Either 'SharedKey' (the default) or 'SharedKeyLight'.
     # - :verb. The http verb used for SharedKey auth. The default is 'GET'.
     # - :x_ms_date. The x-ms-date used. The default is Time.now.httpdate.
-    # - :x_ms_version. The x-ms-version used. The default is '2015-02-21'.
+    # - :x_ms_version. The x-ms-version used. The default is '2016-05-31'.
     # - :auth_string. If true, prepends the auth_type + account name to the
     #    result and returns a string. The default is false.
     #
@@ -130,7 +134,7 @@ module Azure
     #
     #  sig  = Signature.new(url, key)
     #  date = Time.now.httpdate
-    #  vers = '2015-02-21'
+    #  vers = '2016-05-31'
     #
     #  headers = {
     #    'x-ms-date'    => date,
@@ -152,18 +156,19 @@ module Azure
     #  p response.body
     #
     def blob_signature(headers = {})
-      headers.clone.each{ |k,v| headers[k.to_s.downcase.tr('_', '-')] = v }
+      headers = headers.transform_keys { |key| key.to_s.downcase.tr('_', '-') }
 
+      # These are not actually headers, but internally used options
       auth_string = headers.delete('auth-string') || false
-      auth_type   = headers.delete('auth_type') || 'SharedKey'
+      auth_type   = headers.delete('auth-type') || 'SharedKey'
       verb        = headers.delete('verb') || 'GET'
 
       unless ['SharedKey', 'SharedKeyLight'].include?(auth_type)
-        raise ArgumentError, "auth type must be SharedKey or SharedKeyLight"
+        raise ArgumentError, "auth type must be 'SharedKey' or 'SharedKeyLight'"
       end
 
-      headers['x-ms-date'] ||= Time.now.httpdate
-      headers['x-ms-version'] ||= '2015-02-21'
+      headers['x-ms-date'] ||= headers['date'] || Time.now.httpdate
+      headers['x-ms-version'] ||= headers['version'] || storage_services_version
 
       if auth_type == 'SharedKeyLight'
         headers['date'] ||= headers['x-ms-date'] || Time.now.httpdate
@@ -198,7 +203,7 @@ module Azure
     private
 
     def generate_string(verb, headers, auth_type)
-      headers.clone.keys.each{ |k| headers[k.to_s.downcase] = headers[k] }
+      headers = headers.transform_keys { |key| key.to_s.downcase.tr('_', '-') }
       canonical_headers = canonicalize_headers(headers)
 
       if auth_type == 'SharedKeyLight'
