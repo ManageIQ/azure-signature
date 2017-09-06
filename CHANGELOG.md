@@ -1,3 +1,7 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+
 = 0.2.3 - 19-Jul-2016
 * Removed the cgi dependency.
 
