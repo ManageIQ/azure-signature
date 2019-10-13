@@ -24,11 +24,11 @@ Gem::Specification.new do |gem|
   EOF
 
   gem.metadata = {
-    'homepage_uri'      => 'https://github.com/djberg96/azure-signature',
-    'bug_tracker_uri'   => 'https://github.com/djberg96/azure-signature/issues',
-    'changelog_uri'     => 'https://github.com/djberg96/azure-signature/blob/master/CHANGELOG.md',
-    'documentation_uri' => 'https://github.com/djberg96/azure-signature/wiki',
-    'source_code_uri'   => 'https://github.com/djberg96/azure-signature',
-    'wiki_uri'          => 'https://github.com/djberg96/azure-signature/wiki'
+    'homepage_uri'      => 'https://github.com/ManageIQ/azure-signature',
+    'bug_tracker_uri'   => 'https://github.com/ManageIQ/azure-signature/issues',
+    'changelog_uri'     => 'https://github.com/ManageIQ/azure-signature/blob/master/CHANGELOG.md',
+    'documentation_uri' => 'https://github.com/ManageIQ/azure-signature/wiki',
+    'source_code_uri'   => 'https://github.com/ManageIQ/azure-signature',
+    'wiki_uri'          => 'https://github.com/ManageIQ/azure-signature/wiki'
   }
 end
