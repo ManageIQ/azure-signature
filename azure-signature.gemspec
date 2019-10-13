@@ -23,7 +23,7 @@ Gem::Specification.new do |gem|
     Azure storage services - tables, blobs, queues and files.
   EOF
 
-  spec.metadata = {
+  gem.metadata = {
     'homepage_uri'      => 'https://github.com/djberg96/azure-signature',
     'bug_tracker_uri'   => 'https://github.com/djberg96/azure-signature/issues',
     'changelog_uri'     => 'https://github.com/djberg96/azure-signature/blob/master/CHANGELOG.md',
