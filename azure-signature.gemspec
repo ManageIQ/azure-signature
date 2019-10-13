@@ -22,4 +22,13 @@ Gem::Specification.new do |gem|
     Microsoft Azure's cloud platform. You can use this to access
     Azure storage services - tables, blobs, queues and files.
   EOF
+
+  spec.metadata = {
+    'homepage_uri'      => 'https://github.com/djberg96/azure-signature',
+    'bug_tracker_uri'   => 'https://github.com/djberg96/azure-signature/issues',
+    'changelog_uri'     => 'https://github.com/djberg96/azure-signature/blob/master/CHANGELOG.md',
+    'documentation_uri' => 'https://github.com/djberg96/azure-signature/wiki',
+    'source_code_uri'   => 'https://github.com/djberg96/azure-signature',
+    'wiki_uri'          => 'https://github.com/djberg96/azure-signature/wiki'
+  }
 end
