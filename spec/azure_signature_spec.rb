@@ -79,40 +79,34 @@ RSpec.describe Azure::Signature do
     example "canonical_resource returns the expected value for secondary account" do
       url = "https://myaccount-secondary.blob.core.windows.net/mycontainer/myblob"
       sig = Azure::Signature.new(url, @key)
-      expec(sig.canonical_resource).to eq("/myaccount/mycontainer/myblob")
+      expect(sig.canonical_resource).to eq("/myaccount/mycontainer/myblob")
     end
   end
 
-=begin
-  test "constructor automatically escapes resource argument" do
-    @url = "https://myaccount-secondary.blob.core.windows.net/mycontainer/myblob-{12345}"
-    @sig = Azure::Signature.new(@url, @key)
-    assert_equal("/myaccount/mycontainer/myblob-%7B12345%7D", @sig.canonical_resource)
-    assert_equal("https://myaccount-secondary.blob.core.windows.net/mycontainer/myblob-%7B12345%7D", @sig.resource)
-  end
+  context "constructor" do
+    example "constructor automatically escapes resource argument" do
+      url = "https://myaccount-secondary.blob.core.windows.net/mycontainer/myblob-{12345}"
+      sig = Azure::Signature.new(url, @key)
+      expect(sig.canonical_resource).to eq("/myaccount/mycontainer/myblob-%7B12345%7D")
+      expect(sig.resource).to eq("https://myaccount-secondary.blob.core.windows.net/mycontainer/myblob-%7B12345%7D")
+    end
 
-  test "constructor requires two arguments" do
-    assert_raise(ArgumentError){ Azure::Signature.new }
-    assert_raise(ArgumentError){ Azure::Signature.new('http://foo/bar') }
-  end
+    example "constructor requires two arguments" do
+      expect{ Azure::Signature.new }.to raise_error(ArgumentError)
+      expect{ Azure::Signature.new('http://foo/bar') }.to raise_error(ArgumentError)
+    end
 
-  test "table_signature basic functionality" do
-    assert_respond_to(@sig, :table_signature)
-  end
+    example "table_signature basic functionality" do
+      expect(@sig).to respond_to(:table_signature)
+    end
 
-  test "blob_signature basic functionality" do
-    assert_respond_to(@sig, :blob_signature)
-  end
+    example "blob_signature basic functionality" do
+      expect(@sig).to respond_to(:blob_signature)
+    end
 
-  test "file_signature and queue_signature are aliases for blob_signature" do
-    assert_alias_method(@sig, :blob_signature, :file_signature)
-    assert_alias_method(@sig, :blob_signature, :queue_signature)
+    example "file_signature and queue_signature are aliases for blob_signature" do
+      expect(@sig.method(:blob_signature)).to eq(@sig.method(:file_signature))
+      expect(@sig.method(:blob_signature)).to eq(@sig.method(:queue_signature))
+    end
   end
-
-  def teardown
-    @key = nil
-    @url = nil
-    @sig = nil
-  end
-=end
 end
