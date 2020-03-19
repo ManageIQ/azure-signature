@@ -26,12 +26,12 @@ RSpec.describe Azure::Signature do
 
     example 'account_name basic functionality' do
       expect(@sig).to respond_to(:account_name)
-      expect(@sig.account_name).to eql('testsnapshots')
+      expect(@sig.account_name).to eq('testsnapshots')
     end
 
     example 'resource method basic functionality' do
       expect(@sig).to respond_to(:resource)
-      expect(@sig.resource).to eql(@url)
+      expect(@sig.resource).to eq(@url)
     end
 
     example 'uri method basic functionality' do
@@ -41,7 +41,7 @@ RSpec.describe Azure::Signature do
 
     example 'url is an alias for the resource method' do
       expect(@sig).to respond_to(:url)
-      expect(@sig.method(:url)).to eql(@sig.method(:resource))
+      expect(@sig.method(:url)).to eq(@sig.method(:resource))
     end
   end
 
@@ -51,42 +51,36 @@ RSpec.describe Azure::Signature do
       expect(@sig.canonical_resource).to be_kind_of(String)
     end
 
-=begin
-    test "canonical_url is an alias for the canonical_resource method" do
-      assert_respond_to(@sig, :canonical_url)
-      assert_alias_method(@sig, :canonical_url, :canonical_resource)
+    example "canonical_url is an alias for the canonical_resource method" do
+      expect(@sig).to respond_to(:canonical_url)
+      expect(@sig.method(:canonical_url)).to eq(@sig.method(:canonical_resource))
     end
 
-    test "canonical_resource returns the expected value for basic url" do
-      @url = "http://myaccount.blob.core.windows.net/Tables"
-      @sig = Azure::Signature.new(@url, @key)
-      expected = "/myaccount/Tables"
-      assert_equal(expected, @sig.canonical_resource)
+    example "canonical_resource returns the expected value for basic url" do
+      url = "http://myaccount.blob.core.windows.net/Tables"
+      sig = Azure::Signature.new(url, @key)
+      expect(sig.canonical_resource).to eq("/myaccount/Tables")
     end
 
-    test "canonical_resource returns the expected value for url with query" do
-      @url = "http://myaccount.blob.core.windows.net/mycontainer?restype=container&comp=metadata"
-      @sig = Azure::Signature.new(@url, @key)
-      expected = "/myaccount/mycontainer\ncomp:metadata\nrestype:container"
-      assert_equal(expected, @sig.canonical_resource)
+    example "canonical_resource returns the expected value for url with query" do
+      url = "http://myaccount.blob.core.windows.net/mycontainer?restype=container&comp=metadata"
+      sig = Azure::Signature.new(url, @key)
+      expect(sig.canonical_resource).to eq("/myaccount/mycontainer\ncomp:metadata\nrestype:container")
     end
 
-    test "canonical_resource returns the expected value for url with multiple, identical query params" do
-      @url = "http://myaccount.blob.core.windows.net/mycontainer?restype=container"
-      @url << "&comp=list&include=snapshots&include=metadata&include=uncommittedblobs"
-      @sig = Azure::Signature.new(@url, @key)
-      expected = "/myaccount/mycontainer\ncomp:list\ninclude:metadata,snapshots,"
-      expected << "uncommittedblobs\nrestype:container"
-      assert_equal(expected, @sig.canonical_resource)
+    example "canonical_resource returns the expected value for url with multiple, identical query params" do
+      url = "http://myaccount.blob.core.windows.net/mycontainer?restype=container"
+      url << "&comp=list&include=snapshots&include=metadata&include=uncommittedblobs"
+      sig = Azure::Signature.new(url, @key)
+      expected = "/myaccount/mycontainer\ncomp:list\ninclude:metadata,snapshots,uncommittedblobs\nrestype:container"
+      expect(sig.canonical_resource).to eq(expected)
     end
 
-    test "canonical_resource returns the expected value for secondary account" do
-      @url = "https://myaccount-secondary.blob.core.windows.net/mycontainer/myblob"
-      @sig = Azure::Signature.new(@url, @key)
-      expected = "/myaccount/mycontainer/myblob"
-      assert_equal(expected, @sig.canonical_resource)
+    example "canonical_resource returns the expected value for secondary account" do
+      url = "https://myaccount-secondary.blob.core.windows.net/mycontainer/myblob"
+      sig = Azure::Signature.new(url, @key)
+      expec(sig.canonical_resource).to eq("/myaccount/mycontainer/myblob")
     end
-=end
   end
 
 =begin
