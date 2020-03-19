@@ -8,14 +8,14 @@ Gem::Specification.new do |spec|
   spec.email     = 'djberg96@gmail.com'
   spec.homepage  = 'http://github.com/djberg96/azure-signature'
   spec.summary   = 'Generate authentication signatures for Azure'
-  spec.test_file = 'test/test_signature.rb'
+  spec.test_file = 'spec/azure_signature_spec.rb'
   spec.files     = Dir['**/*'].reject{ |f| f.include?('git') }
 
   spec.extra_rdoc_files = ['README', 'CHANGELOG.md', 'MANIFEST']
    
   spec.add_dependency('addressable', '~> 2')
   spec.add_dependency('activesupport', '>= 4.2.2')
-  spec.add_development_dependency('test-unit', '~> 3')
+  spec.add_development_dependency('rspec', '~> 3')
 
   spec.description = <<-EOF
     The azure-signature library generates storage signatures for
