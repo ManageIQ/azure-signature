@@ -1,25 +1,34 @@
 require 'rubygems'
 
-Gem::Specification.new do |gem|
-  gem.name      = 'azure-signature'
-  gem.version   = '0.3.0'
-  gem.author    = 'Daniel J. Berger'
-  gem.license   = 'Apache 2.0'
-  gem.email     = 'djberg96@gmail.com'
-  gem.homepage  = 'http://github.com/djberg96/azure-signature'
-  gem.summary   = 'Generate authentication signatures for Azure'
-  gem.test_file = 'test/test_signature.rb'
-  gem.files     = Dir['**/*'].reject{ |f| f.include?('git') }
+Gem::Specification.new do |spec|
+  spec.name      = 'azure-signature'
+  spec.version   = '0.3.0'
+  spec.author    = 'Daniel J. Berger'
+  spec.license   = 'Apache-2.0'
+  spec.email     = 'djberg96@gmail.com'
+  spec.homepage  = 'http://github.com/djberg96/azure-signature'
+  spec.summary   = 'Generate authentication signatures for Azure'
+  spec.test_file = 'spec/azure_signature_spec.rb'
+  spec.files     = Dir['**/*'].reject{ |f| f.include?('git') }
 
-  gem.extra_rdoc_files = ['README', 'CHANGES', 'MANIFEST']
+  spec.extra_rdoc_files = ['README', 'CHANGELOG.md', 'MANIFEST']
    
-  gem.add_dependency('addressable')
-  gem.add_dependency('activesupport', '>= 4.2.2')
-  gem.add_development_dependency('test-unit')
+  spec.add_dependency('addressable', '~> 2')
+  spec.add_dependency('activesupport', '>= 4.2.2')
+  spec.add_development_dependency('rspec', '~> 3')
 
-  gem.description = <<-EOF
+  spec.description = <<-EOF
     The azure-signature library generates storage signatures for
     Microsoft Azure's cloud platform. You can use this to access
     Azure storage services - tables, blobs, queues and files.
   EOF
+
+  spec.metadata = {
+    'homepage_uri'      => 'https://github.com/ManageIQ/azure-signature',
+    'bug_tracker_uri'   => 'https://github.com/ManageIQ/azure-signature/issues',
+    'changelog_uri'     => 'https://github.com/ManageIQ/azure-signature/blob/master/CHANGELOG.md',
+    'documentation_uri' => 'https://github.com/ManageIQ/azure-signature/wiki',
+    'source_code_uri'   => 'https://github.com/ManageIQ/azure-signature',
+    'wiki_uri'          => 'https://github.com/ManageIQ/azure-signature/wiki'
+  }
 end
