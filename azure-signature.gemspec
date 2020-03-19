@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.test_file = 'spec/azure_signature_spec.rb'
   spec.files     = Dir['**/*'].reject{ |f| f.include?('git') }
 
-  spec.extra_rdoc_files = ['README', 'CHANGELOG.md', 'MANIFEST']
+  spec.extra_rdoc_files = ['README.md', 'CHANGELOG.md', 'MANIFEST.md']
    
   spec.add_dependency('addressable', '~> 2')
   spec.add_dependency('activesupport', '>= 4.2.2')
