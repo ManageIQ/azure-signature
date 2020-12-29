@@ -1,6 +1,9 @@
-CHANGES
-MANIFEST
+CHANGELOG.md
+LICENSE
+MANIFEST.md
+README.md
+Gemfile
 Rakefile
-README
+azure-signature.gemspec
 lib/azure/signature.rb
-test/test_signature.rb
+spec/azure_signature_spec.rb
