@@ -15,7 +15,8 @@ Gem::Specification.new do |spec|
    
   spec.add_dependency('addressable', '~> 2')
   spec.add_dependency('activesupport', '>= 4.2.2')
-  spec.add_development_dependency('rspec', '~> 3')
+  spec.add_development_dependency "manageiq-style"
+  spec.add_development_dependency "rspec",         '~> 3'
 
   spec.description = <<-EOF
     The azure-signature library generates storage signatures for
